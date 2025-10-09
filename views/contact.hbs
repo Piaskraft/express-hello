@@ -1,0 +1,17 @@
+<h2>Kontakt (POST)</h2>
+<form action="/contact" method="post">
+  <p><label>Imię: <input type="text" name="name" required></label></p>
+  <p><label>Wiadomość: <input type="text" name="message" required></label></p>
+  <button type="submit">Wyślij</button>
+</form>
+
+{{#if error}}
+  <p style="color:red;"><strong>{{ error }}</strong></p>
+{{/if}}
+
+
+
+{{#if sent}}
+  <hr />
+  <p>Dzięki, {{name}}! Otrzymaliśmy wiadomość: <strong>{{message}}</strong></p>
+{{/if}}
