@@ -1,14 +1,17 @@
 const path = require('path');
 const express = require('express');
 const { engine } = require('express-handlebars');
+const cors = require('cors');
 
+const seatsRoutes = require('./routes/seats.routes');
 const testimonialsRoutes = require('./routes/testimonials.routes');
 
 const app = express();
 
-/* --- MIDDLEWARE --- */
-app.use(express.json());                      // JSON body dla API
-app.use(express.urlencoded({ extended: true })); // form-urlencoded dla formularzy
+/* --- CORS + parsowanie + statyki --- */
+app.use(cors());                                   // pozwól na połączenia z frontu (np. :3000)
+app.use(express.json());                           // JSON body dla API
+app.use(express.urlencoded({ extended: true }));   // form-urlencoded (formularze)
 app.use(express.static(path.join(__dirname, 'public')));
 
 /* --- HANDLEBARS --- */
@@ -29,38 +32,29 @@ app.use((req, res, next) => {
 
 /* --- TRASY WIDOKÓW --- */
 app.get('/', (req, res) => res.render('index'));
-app.get('/hello/:name', (req, res) => {
-  res.render('hello', { name: req.params.name });
-});
+app.get('/hello/:name', (req, res) => res.render('hello', { name: req.params.name }));
 app.get('/contact', (req, res) => res.render('contact'));
 
-/* --- CONTACT: WALIDACJA (JEDNA definicja!) --- */
+/* --- CONTACT: WALIDACJA --- */
 app.post('/contact/send-message', (req, res) => {
   const { author, sender, title, message } = req.body;
-
   if (!author || !sender || !title || !message) {
-    return res.render('contact', {
-      isError: true,
-      author, sender, title, message,
-    });
+    return res.render('contact', { isError: true, author, sender, title, message });
   }
-
-  return res.render('contact', {
-    isSent: true,
-    author, sender, title, message,
-  });
+  return res.render('contact', { isSent: true, author, sender, title, message });
 });
 
-/* --- API ROUTER (PO UTWORZENIU app!) --- */
+/* --- API ROUTERS --- */
+app.use('/api', seatsRoutes);
 app.use('/api', testimonialsRoutes);
-app.use('/api', (req, res) => {
-  res.status(404).json({ message: 'Not found' });
-});
 
-/* --- 404 / 500 --- */
-app.use((req, res) => {
-  res.status(404).render('not-found');
-});
+/* --- 404 JSON dla API (fallback) --- */
+app.use('/api', (req, res) => res.status(404).json({ message: 'Not found' }));
+
+/* --- 404 dla WIDOKÓW (HTML) --- */
+app.use((req, res) => res.status(404).render('not-found'));
+
+/* --- GLOBALNY 500 --- */
 app.use((err, req, res, next) => {
   console.error('❌ APP ERROR:', err);
   res.status(500).render('error', { message: 'Coś poszło nie tak.' });
