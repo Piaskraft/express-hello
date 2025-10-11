@@ -1,27 +1,20 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
-  <head>
-    <meta charset="utf-8" />
-    <title>Express App</title>
-    <link rel="stylesheet" href="/style.css">
+<head>
+  <meta charset="utf-8">
+  <title>Express App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    {{> nav}}
+    <hr>
+  </header>
 
-  </head>
-  <body>
-    <header>
-      <h1>Moja super aplikacja</h1>
-      <nav>
-        <a href="/">Home</a> |
-        <a href="/hello/John">Hello</a>
-        <a href="/contact">Kontakt</a>
-      </nav>
-      <hr/>
-    </header>
+  {{{ body }}}
 
-    {{{ body }}}
-
-    <hr/>
-    <footer>
-      <small>&copy; {{year}}</small>
-    </footer>
-  </body>
+  <hr>
+  <footer>© {{year}}</footer>
+</body>
 </html>

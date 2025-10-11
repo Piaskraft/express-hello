@@ -1,17 +1,20 @@
 <h2>Kontakt (POST)</h2>
-<form action="/contact" method="post">
-  <p><label>Imię: <input type="text" name="name" required></label></p>
-  <p><label>Wiadomość: <input type="text" name="message" required></label></p>
+
+<form action="/contact/send-message" method="POST">
+  <label>Imię i nazwisko:</label>
+  <input type="text"   name="author"  value="{{author}}">
+
+  <label>E-mail:</label>
+  <input type="email"  name="sender"  value="{{sender}}">
+
+  <label>Tytuł:</label>
+  <input type="text"   name="title"   value="{{title}}">
+
+  <label>Wiadomość:</label>
+  <textarea name="message">{{message}}</textarea>
+
   <button type="submit">Wyślij</button>
 </form>
 
-{{#if error}}
-  <p style="color:red;"><strong>{{ error }}</strong></p>
-{{/if}}
-
-
-
-{{#if sent}}
-  <hr />
-  <p>Dzięki, {{name}}! Otrzymaliśmy wiadomość: <strong>{{message}}</strong></p>
-{{/if}}
+{{#if isSent}}  <p class="success">✅ Wiadomość od {{author}} została wysłana.</p>{{/if}}
+{{#if isError}} <p class="error">❌ Uzupełnij wszystkie pola.</p>{{/if}}
